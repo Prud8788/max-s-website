@@ -93,8 +93,8 @@
     <div id="game-container">
         <p id="game-status">Click 'Deal' to start.</p>
         <button onclick="deal()">Deal</button>
-        <button onclick="hit()">Hit</button>
-        <button onclick="stand()">Stand</button>
+        <button onclick="hit()" disabled id="hit-btn">Hit</button>
+        <button onclick="stand()" disabled id="stand-btn">Stand</button>
         <p id="player-hand"></p>
         <p id="dealer-hand"></p>
     </div>
@@ -120,15 +120,24 @@
             createDeck();
             playerHand = [deck.pop(), deck.pop()];
             dealerHand = [deck.pop(), deck.pop()];
+            document.getElementById('hit-btn').disabled = false;
+            document.getElementById('stand-btn').disabled = false;
+            document.getElementById('game-status').innerText = "Game in progress...";
             updateUI();
         }
 
         function hit() {
             playerHand.push(deck.pop());
             updateUI();
+            if (calculateHand(playerHand) > 21) {
+                document.getElementById('game-status').innerText = 'Player busts! Dealer wins!';
+                endGame();
+            }
         }
 
         function stand() {
+            document.getElementById('hit-btn').disabled = true;
+            document.getElementById('stand-btn').disabled = true;
             while (calculateHand(dealerHand) < 17) {
                 dealerHand.push(deck.pop());
             }
@@ -175,6 +184,11 @@
                 status = 'It's a tie!';
             }
             document.getElementById('game-status').innerText = status;
+        }
+
+        function endGame() {
+            document.getElementById('hit-btn').disabled = true;
+            document.getElementById('stand-btn').disabled = true;
         }
     </script>
 </body>
